@@ -1,3 +1,129 @@
+const { User } = require('../models');
+
+// Register user
+exports.register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Check if user exists
+    const userExists = await User.findOne({ where: { email } });
+    if (userExists) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Email already in use' 
+      });
+    }
+
+    // Create user
+    const user = await User.create({
+      name,
+      email,
+      password
+    });
+
+    // Generate token
+    const token = user.generateToken();
+
+    res.status(201).json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server Error' 
+    });
+  }
+};
+
+// Login user
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validate
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please provide email and password' 
+      });
+    }
+
+    // Find user
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid credentials' 
+      });
+    }
+
+    // Check password
+    const isMatch = await user.checkPassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid credentials' 
+      });
+    }
+
+    // Generate token
+    const token = user.generateToken();
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server Error' 
+    });
+  }
+};
+
+// Get current user
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] }
+    });
+
+    res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server Error' 
+    });
+  }
+};
+
+// Logout user
+exports.logout = async (req, res) => {
+  res.json({
+    success: true,
+    message: 'Logged out successfully'
+  });
+};
+
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 
