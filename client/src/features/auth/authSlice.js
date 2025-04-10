@@ -4,16 +4,16 @@ import { api } from '../../services/api';
 // Async thunks for authentication actions
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ name, email, password }, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
-      
-      // Store the token in localStorage
-      localStorage.setItem('token', response.token);
+      const response = await api.auth.register({ 
+        name, 
+        email, 
+        password 
+      });
       
       return response;
     } catch (error) {
-      return rejectWithValue(
         error.response?.data?.message || 
         error.message || 
         'Login failed. Please check your credentials.'
@@ -48,7 +48,7 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       // Call logout endpoint if needed
-      await api.post('/auth/logout');
+      await api.auth.logout();
       
       // Remove token from localStorage
       localStorage.removeItem('token');
@@ -72,7 +72,7 @@ export const checkAuth = createAsyncThunk(
       }
       
       // Get the current user profile with the token
-      const response = await api.get('/auth/me');
+      const response = await api.auth.getCurrentUser();
       return response;
     } catch (error) {
       // If token is invalid, remove it

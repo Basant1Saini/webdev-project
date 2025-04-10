@@ -30,13 +30,23 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: var(--max-width);
-  margin: 0 auto;
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-logo {
-  color: #fff;
-  font-size: 1.5rem;
+.is-invalid {
+  border-color: var(--danger-color) !important;
+}
+
+.invalid-feedback {
+  color: var(--danger-color);
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
   font-weight: bold;
   text-decoration: none;
 }
