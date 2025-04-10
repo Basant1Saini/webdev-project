@@ -1,5 +1,55 @@
 const { User } = require('../models');
 
+ return res.status(400).json({
+        success: false,
+        message: 'User with that email already exists'
+      });
+    }
+
+    // Create user (password hashing is handled by model hooks)
+    const user = await User.create({
+      name,
+      email,
+      password
+    });
+
+    // Generate token
+    const token = user.generateToken();
+
+    // Send response (exclude password)
+    const userData = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive,
+      createdAt: user.createdAt
+    };
+
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      token,
+      user: userData
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    
+    // Handle validation errors
+    if (error.name === 'SequelizeValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: error.errors.map(e => e.message).join(', ')
+      });
+    }
+    
+    res.status(500).json({
+      success: false,
+      message: 'Server Error'
+    });
+  }
+};
+
 /**
  * @desc    Login user
  * @route   POST /api/auth/login
@@ -71,7 +121,7 @@ exports.login = async (req, res) => {
       message: 'Server Error'
     });
   }
-};</replace
+};
 
 /**
  * @desc    Login user
