@@ -175,21 +175,4 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
-{error && <div className="alert alert-danger">{error}</div>}
-      {successMessage && <div className="alert alert-success">{successMessage}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name">Full Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={name}
-            onChange={handleChange}
-            placeholder="Enter your full name"
-            className={formErrors.name ? 'is-invalid' : ''}
-          />
-          {formErrors.name && <div className="invalid-feedback">{formErrors.name}</div>}
-        </div>
 
