@@ -1,37 +1,30 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { api } from '../../services/api';
 
-// Async thunks for authentication actions
-export const login = createAsyncThunk(
-  'auth/login',
-  async ({ email, password }, { rejectWithValue }) => {
+/export const checkAuth = createAsyncThunk(
+  'auth/checkAuth',
+  async (_, { rejectWithValue }) => {
     try {
-      // Placeholder for actual API call
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const token = localStorage.getItem('token');
       
-      const data = await response.json();
-      
-      if (!response.ok) {
-        return rejectWithValue(data.error || 'Login failed');
+      if (!token) {
+        return rejectWithValue('No token found');
       }
       
-      // Store the token in localStorage
-      localStorage.setItem('token', data.token);
-      
-      return data;
+      // Get the current user profile with the token
+      const response = await api.get('/auth/me');
+      return response;
     } catch (error) {
-      return rejectWithValue(error.message || 'Login failed');
+      // If token is invalid, remove it
+      localStorage.removeItem('token');
+      return rejectWithValue(
+        error.response?.data?.message || 
+        error.message || 
+        'Authentication failed'
+      );
     }
   }
 );
-
-export const register = createAsyncThunk(
-  'auth/register',
   async ({ name, email, password }, { rejectWithValue }) => {
     try {
       // Placeholder for actual API call
