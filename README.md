@@ -2,13 +2,6 @@
 
 A comprehensive family social networking application that allows users to create and manage family trees, share events, photos, and memories, and stay connected with family members.
 
-## Features
-
-- **Authentication System**: Secure user registration and login
-- **Family Tree Management**: Create and visualize family relationships
-- **Event Sharing**: Create and share family events, birthdays, and anniversaries
-- **Media Sharing**: Upload and share photos, videos, and documents
-- **Social Networking**: Connect with family members, send messages, and stay updated
 
 ## Project Structure
 
