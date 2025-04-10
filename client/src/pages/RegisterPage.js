@@ -102,6 +102,73 @@ const RegisterPage = () => {
         Create your Family Network account
       </p>
       
-      {error && <div className="alert alert-danger">{error}</div>}
-      {success && <div className="alert alert-success">Registration successful! Redirecting
+{error && <div className="alert alert-danger">{error}</div>}
+      {success && <div className="alert alert-success">Registration successful! Redirecting to login page...</div>}
+to login page...</div>}
+      
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="name">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={name}
+            onChange={handleChange}
+            placeholder="Enter your full name"
+            className={formErrors.name ? 'is-invalid' : ''}
+          />
+          {formErrors.name && <div className="invalid-feedback">{formErrors.name}</div>}
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={email}
+            onChange={handleChange}
+            placeholder="Enter your email"
+            className={formErrors.email ? 'is-invalid' : ''}
+          />
+          {formErrors.email && <div className="invalid-feedback">{formErrors.email}</div>}
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={password}
+            onChange={handleChange}
+            placeholder="Enter your password"
+            className={formErrors.password ? 'is-invalid' : ''}
+          />
+          {formErrors.password && <div className="invalid-feedback">{formErrors.password}</div>}
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={handleChange}
+            placeholder="Confirm your password"
+            className={formErrors.confirmPassword ? 'is-invalid' : ''}
+          />
+          {formErrors.confirmPassword && <div className="invalid-feedback">{formErrors.confirmPassword}</div>}
+        </div>
+        
+        <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+          {loading ? 'Signing up...' : 'Sign Up'}
+        </button>
+      </form>
+      
+      <p className="text-center mt-3">
+        Already have an account? <Link to="/login">Sign In</Link>
+      </p>
 

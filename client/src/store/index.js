@@ -12,7 +12,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore certain action types or paths in the state
-        ignoredActions: ['auth/login/rejected'],
+        ignoredActions: ['auth/login/rejected', 'auth/register/rejected', 'auth/checkAuth/rejected'],
       },
     }),
   devTools: process.env.NODE_ENV !== 'production',

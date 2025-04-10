@@ -1,7 +1,67 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../services/api';
 
-/export const checkAuth = createAsyncThunk(
+// Async thunks for authentication actions
+export const login = createAsyncThunk(
+  'auth/login',
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      
+      // Store the token in localStorage
+      localStorage.setItem('token', response.token);
+      
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 
+        error.message || 
+        'Login failed. Please check your credentials.'
+      );
+    }
+  }
+);
+
+export const register = createAsyncThunk(
+  'auth/register',
+  async ({ name, email, password }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/auth/register', { 
+        name, 
+        email, 
+        password 
+      });
+      
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 
+        error.message || 
+        'Registration failed. Please try again.'
+      );
+    }
+  }
+);
+
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      // Call logout endpoint if needed
+      await api.post('/auth/logout');
+      
+      // Remove token from localStorage
+      localStorage.removeItem('token');
+      return { success: true };
+    } catch (error) {
+      // Still remove token even if API call fails
+      localStorage.removeItem('token');
+      return { success: true };
+    }
+  }
+);
+
+export const checkAuth = createAsyncThunk(
   'auth/checkAuth',
   async (_, { rejectWithValue }) => {
     try {
@@ -22,74 +82,6 @@ import { api } from '../../services/api';
         error.message || 
         'Authentication failed'
       );
-    }
-  }
-);
-  async ({ name, email, password }, { rejectWithValue }) => {
-    try {
-      // Placeholder for actual API call
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        return rejectWithValue(data.error || 'Registration failed');
-      }
-      
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message || 'Registration failed');
-    }
-  }
-);
-
-export const logout = createAsyncThunk(
-  'auth/logout',
-  async (_, { rejectWithValue }) => {
-    try {
-      // Remove token from localStorage
-      localStorage.removeItem('token');
-      return { success: true };
-    } catch (error) {
-      return rejectWithValue(error.message || 'Logout failed');
-    }
-  }
-);
-
-export const checkAuth = createAsyncThunk(
-  'auth/checkAuth',
-  async (_, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        return rejectWithValue('No token found');
-      }
-      
-      // Placeholder for actual API call to validate token
-      const response = await fetch('/api/auth/me', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        localStorage.removeItem('token');
-        return rejectWithValue(data.error || 'Invalid token');
-      }
-      
-      return data;
-    } catch (error) {
-      localStorage.removeItem('token');
-      return rejectWithValue(error.message || 'Authentication check failed');
     }
   }
 );
